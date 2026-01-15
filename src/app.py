@@ -43,53 +43,116 @@ class NuitkaGUI(QMainWindow):
         self.check_nuitka()
 
     def create_menu_bar(self):
-        """Create application menu bar."""
+        """Create application menu bar with keyboard shortcuts."""
         menubar = self.menuBar()
 
         # File menu
         file_menu = menubar.addMenu("&File")
 
         new_action = QAction("&New Configuration", self)
+        new_action.setShortcut("Ctrl+N")
+        new_action.setToolTip("Create a new configuration (Ctrl+N)")
         new_action.triggered.connect(self.on_new_config)
         file_menu.addAction(new_action)
 
         open_action = QAction("&Open Configuration...", self)
+        open_action.setShortcut("Ctrl+O")
+        open_action.setToolTip("Open an existing configuration (Ctrl+O)")
         open_action.triggered.connect(self.on_load_config)
         file_menu.addAction(open_action)
 
         save_action = QAction("&Save Configuration", self)
+        save_action.setShortcut("Ctrl+S")
+        save_action.setToolTip("Save current configuration (Ctrl+S)")
         save_action.triggered.connect(self.on_save_config)
         file_menu.addAction(save_action)
 
         save_as_action = QAction("Save Configuration &As...", self)
+        save_as_action.setShortcut("Ctrl+Shift+S")
+        save_as_action.setToolTip("Save configuration with new name (Ctrl+Shift+S)")
         save_as_action.triggered.connect(self.on_save_config_as)
         file_menu.addAction(save_as_action)
 
         file_menu.addSeparator()
 
         exit_action = QAction("E&xit", self)
+        exit_action.setShortcut("Ctrl+Q")
+        exit_action.setToolTip("Exit application (Ctrl+Q)")
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
+
+        # Build menu
+        build_menu = menubar.addMenu("&Build")
+
+        compile_action = QAction("&Build", self)
+        compile_action.setShortcut("F5")
+        compile_action.setToolTip("Start compilation (F5)")
+        compile_action.triggered.connect(self.on_compile)
+        build_menu.addAction(compile_action)
+
+        stop_action = QAction("&Stop", self)
+        stop_action.setShortcut("Shift+F5")
+        stop_action.setToolTip("Stop running compilation (Shift+F5)")
+        stop_action.triggered.connect(self.on_cancel_compile)
+        build_menu.addAction(stop_action)
+
+        build_menu.addSeparator()
+
+        validate_action = QAction("&Validate Configuration", self)
+        validate_action.setShortcut("Ctrl+Shift+V")
+        validate_action.setToolTip("Validate configuration (Ctrl+Shift+V)")
+        validate_action.triggered.connect(lambda: self.main_window.validate_placeholder())
+        build_menu.addAction(validate_action)
 
         # View menu
         view_menu = menubar.addMenu("&View")
 
         show_cmd_action = QAction("Show &Command", self)
+        show_cmd_action.setShortcut("Ctrl+K")
+        show_cmd_action.setToolTip("Show Nuitka command (Ctrl+K)")
         show_cmd_action.triggered.connect(self.on_show_command)
         view_menu.addAction(show_cmd_action)
 
         clear_output_action = QAction("C&lear Output", self)
+        clear_output_action.setShortcut("Ctrl+L")
+        clear_output_action.setToolTip("Clear console output (Ctrl+L)")
         clear_output_action.triggered.connect(self.main_window.clear_output)
         view_menu.addAction(clear_output_action)
+
+        view_menu.addSeparator()
+
+        toggle_theme_action = QAction("Toggle &Theme", self)
+        toggle_theme_action.setShortcut("Ctrl+T")
+        toggle_theme_action.setToolTip("Switch between light and dark themes (Ctrl+T)")
+        toggle_theme_action.triggered.connect(self.main_window.toggle_theme)
+        view_menu.addAction(toggle_theme_action)
+
+        toggle_console_action = QAction("Toggle &Console", self)
+        toggle_console_action.setShortcut("Ctrl+`")
+        toggle_console_action.setToolTip("Show/hide console output (Ctrl+`)")
+        toggle_console_action.triggered.connect(lambda: self.main_window.console_dock.setVisible(
+            not self.main_window.console_dock.isVisible()
+        ))
+        view_menu.addAction(toggle_console_action)
 
         # Help menu
         help_menu = menubar.addMenu("&Help")
 
+        shortcuts_action = QAction("Keyboard &Shortcuts", self)
+        shortcuts_action.setShortcut("F1")
+        shortcuts_action.setToolTip("Show all keyboard shortcuts (F1)")
+        shortcuts_action.triggered.connect(self.show_shortcuts_dialog)
+        help_menu.addAction(shortcuts_action)
+
+        help_menu.addSeparator()
+
         about_action = QAction("&About", self)
+        about_action.setToolTip("About this application")
         about_action.triggered.connect(self.show_about)
         help_menu.addAction(about_action)
 
         docs_action = QAction("Nuitka &Documentation", self)
+        docs_action.setToolTip("Open Nuitka documentation in browser")
         docs_action.triggered.connect(self.open_nuitka_docs)
         help_menu.addAction(docs_action)
 
@@ -315,6 +378,75 @@ class NuitkaGUI(QMainWindow):
         btn_layout.addWidget(close_btn)
 
         layout.addLayout(btn_layout)
+
+        dialog.exec()
+
+    def show_shortcuts_dialog(self):
+        """Show keyboard shortcuts help dialog."""
+        shortcuts_text = """
+<h3>Keyboard Shortcuts</h3>
+
+<h4>File Operations</h4>
+<table style='width:100%; border-collapse: collapse;'>
+<tr><td style='padding: 4px;'><b>Ctrl+N</b></td><td>New Configuration</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+O</b></td><td>Open Configuration</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+S</b></td><td>Save Configuration</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+Shift+S</b></td><td>Save As...</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+Q</b></td><td>Exit Application</td></tr>
+</table>
+
+<h4>Build Operations</h4>
+<table style='width:100%; border-collapse: collapse;'>
+<tr><td style='padding: 4px;'><b>F5</b></td><td>Start Build</td></tr>
+<tr><td style='padding: 4px;'><b>Shift+F5</b></td><td>Stop Build</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+Shift+V</b></td><td>Validate Configuration</td></tr>
+</table>
+
+<h4>View</h4>
+<table style='width:100%; border-collapse: collapse;'>
+<tr><td style='padding: 4px;'><b>Ctrl+K</b></td><td>Show Command</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+L</b></td><td>Clear Output</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+T</b></td><td>Toggle Theme</td></tr>
+<tr><td style='padding: 4px;'><b>Ctrl+`</b></td><td>Toggle Console</td></tr>
+</table>
+
+<h4>Help</h4>
+<table style='width:100%; border-collapse: collapse;'>
+<tr><td style='padding: 4px;'><b>F1</b></td><td>Show This Dialog</td></tr>
+</table>
+
+<h4>Navigation</h4>
+<table style='width:100%; border-collapse: collapse;'>
+<tr><td style='padding: 4px;'><b>Tab</b></td><td>Navigate between fields</td></tr>
+<tr><td style='padding: 4px;'><b>Shift+Tab</b></td><td>Navigate backwards</td></tr>
+<tr><td style='padding: 4px;'><b>Enter</b></td><td>Move to next field</td></tr>
+<tr><td style='padding: 4px;'><b>Shift+Enter</b></td><td>Move to previous field</td></tr>
+</table>
+        """
+
+        # Create a dialog with formatted text
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Keyboard Shortcuts")
+        dialog.setMinimumSize(500, 600)
+
+        layout = QVBoxLayout(dialog)
+
+        text_edit = QPlainTextEdit()
+        text_edit.setReadOnly(True)
+        text_edit.setPlainText(shortcuts_text.replace("<h3>", "\n").replace("</h3>", "\n")
+            .replace("<h4>", "\n").replace("</h4>", ":")
+            .replace("<table", "").replace("</table>", "")
+            .replace("<tr>", "").replace("</tr>", "")
+            .replace("<td", "  ").replace("</td>", "")
+            .replace("<b>", "").replace("</b>", "")
+            .replace("style='padding: 4px;'", "")
+            .replace("style='width:100%; border-collapse: collapse;'", ""))
+        layout.addWidget(text_edit)
+
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(dialog.accept)
+        close_btn.setDefault(True)
+        layout.addWidget(close_btn)
 
         dialog.exec()
 

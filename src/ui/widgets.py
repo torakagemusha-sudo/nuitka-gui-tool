@@ -44,11 +44,21 @@ class FileSelectFrame(QWidget):
         self.entry = QLineEdit(self)
         self.entry.setMinimumWidth(300)
         self.entry.textChanged.connect(self.pathChanged.emit)
+
+        # Accessibility: Set accessible names and descriptions
+        self.entry.setAccessibleName(f"{label} path")
+        self.entry.setAccessibleDescription(f"Enter or browse for a {mode}")
+
         layout.addWidget(self.entry, 1)  # Stretch factor 1
 
         # Browse button
         self.browse_btn = QPushButton("Browse...", self)
         self.browse_btn.clicked.connect(self._browse)
+
+        # Accessibility: Set accessible names for browse button
+        self.browse_btn.setAccessibleName(f"Browse for {label}")
+        self.browse_btn.setAccessibleDescription(f"Open {mode} selection dialog")
+
         layout.addWidget(self.browse_btn)
 
     def _browse(self):
@@ -123,6 +133,11 @@ class ListBoxWithButtons(QWidget):
         font_metrics = self.listbox.fontMetrics()
         item_height = font_metrics.height() + 6  # padding
         self.listbox.setMinimumHeight(height * item_height + 10)
+
+        # Accessibility: Set accessible names and descriptions
+        self.listbox.setAccessibleName(label)
+        self.listbox.setAccessibleDescription(f"List of {label.lower()}")
+
         layout.addWidget(self.listbox, 1)  # Stretch factor 1
 
         # Button frame
@@ -132,11 +147,21 @@ class ListBoxWithButtons(QWidget):
         self.add_btn = QPushButton("Add", self)
         self.add_btn.setProperty("class", "compact")
         self.add_btn.clicked.connect(self._add_item)
+
+        # Accessibility: Set accessible names for buttons
+        self.add_btn.setAccessibleName(f"Add {label}")
+        self.add_btn.setAccessibleDescription(f"Add new item to {label.lower()}")
+
         btn_layout.addWidget(self.add_btn)
 
         self.remove_btn = QPushButton("Remove", self)
         self.remove_btn.setProperty("class", "compact")
         self.remove_btn.clicked.connect(self._remove_selected)
+
+        # Accessibility: Set accessible names for remove button
+        self.remove_btn.setAccessibleName(f"Remove selected {label}")
+        self.remove_btn.setAccessibleDescription(f"Remove selected items from {label.lower()}")
+
         btn_layout.addWidget(self.remove_btn)
 
         btn_layout.addStretch(1)
