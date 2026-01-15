@@ -21,6 +21,10 @@ class ConfigManager:
     def _get_default_config(self):
         """Get default configuration structure."""
         return {
+            "app": {
+                "theme": "light",  # "light", "dark", or "auto"
+                "theme_auto_switch": False,
+            },
             "basic": {
                 "input_file": "",
                 "mode": "standalone",

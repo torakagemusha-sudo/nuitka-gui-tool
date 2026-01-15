@@ -1,25 +1,55 @@
 """
 Industrial instrument panel stylesheet for PySide6 Nuitka GUI
 """
-# Color Palette - Industrial Warm (WCAG AA Compliant)
-COLORS = {
+
+# Color Palette - Industrial Warm Light Theme (WCAG AA Compliant)
+COLORS_LIGHT = {
     "accent": "#D07A2D",
     "accent_hover": "#B5661E",
     "accent_pressed": "#8E4E16",
     "success": "#3A7C3A",
     "error": "#B23A3A",
     "warning": "#C27A2A",
+    "info": "#3B5C8A",
     "background_top": "#F4F0E8",
     "background_bottom": "#E6DED2",
     "card": "#FBFAF7",
     "border": "#D4C9B8",
     "text_primary": "#2B2A27",
-    "text_secondary": "#4A4640",  # Updated from #5E5A52 for WCAG AA (4.5:1 contrast)
-    "text_tertiary": "#8B8578",   # New color for less important text
-    "text_disabled": "#767169",   # Updated from #9B9488 for WCAG AA (3:1 contrast for large text)
-    "dark_bg": "#1C1B19",
-    "dark_fg": "#E6E0D6",
+    "text_secondary": "#4A4640",
+    "text_tertiary": "#8B8578",
+    "text_disabled": "#767169",
+    # Console colors
+    "console_bg": "#1C1B19",
+    "console_fg": "#E6E0D6",
 }
+
+# Color Palette - Industrial Warm Dark Theme (WCAG AA Compliant)
+COLORS_DARK = {
+    "accent": "#E88D3F",  # Lighter for dark backgrounds
+    "accent_hover": "#F5A864",
+    "accent_pressed": "#D07A2D",
+    "success": "#5CB85C",  # Lighter green
+    "error": "#E74C3C",    # Lighter red
+    "warning": "#F39C12",  # Lighter orange
+    "info": "#5DADE2",     # Lighter blue
+    # Background layers (darkest to lightest)
+    "background_top": "#1C1B19",
+    "background_bottom": "#252321",
+    "card": "#2B2926",
+    "border": "#3D3935",
+    # Text colors (14:1, 7:1, 4.5:1, 3:1 contrast ratios)
+    "text_primary": "#E6E0D6",
+    "text_secondary": "#B5AFA3",
+    "text_tertiary": "#8B8578",
+    "text_disabled": "#6B6560",
+    # Console colors
+    "console_bg": "#141312",
+    "console_fg": "#E6E0D6",
+}
+
+# Default theme
+COLORS = COLORS_LIGHT
 
 # Spacing constants
 SPACING = {
@@ -49,20 +79,62 @@ FONT_SIZES = {
     "2xl": "20pt",  # App name
 }
 
-FLUENT_QSS = f"""
+
+class ThemeManager:
+    """Manages application themes and stylesheet generation."""
+
+    def __init__(self):
+        self.current_theme = "light"
+        self._observers = []
+
+    def get_colors(self, theme_name="light"):
+        """Get color palette for specified theme."""
+        if theme_name == "dark":
+            return COLORS_DARK
+        return COLORS_LIGHT
+
+    def build_stylesheet(self, theme_name="light"):
+        """Build complete QSS stylesheet for specified theme."""
+        colors = self.get_colors(theme_name)
+        return self._generate_qss(colors)
+
+    def switch_theme(self, app, theme_name):
+        """Switch application theme."""
+        if theme_name not in ["light", "dark"]:
+            theme_name = "light"
+
+        self.current_theme = theme_name
+        stylesheet = self.build_stylesheet(theme_name)
+        app.setStyleSheet(stylesheet)
+
+        # Notify observers
+        self._notify_observers(theme_name)
+
+    def add_observer(self, callback):
+        """Add theme change observer."""
+        self._observers.append(callback)
+
+    def _notify_observers(self, theme_name):
+        """Notify all observers of theme change."""
+        for callback in self._observers:
+            callback(theme_name)
+
+    def _generate_qss(self, colors):
+        """Generate QSS stylesheet with given color palette."""
+        return f"""
 /* ============================= GLOBAL ============================= */
 QMainWindow {{
     background-color: qlineargradient(
         x1: 0, y1: 0, x2: 1, y2: 1,
-        stop: 0 {COLORS['background_top']},
-        stop: 1 {COLORS['background_bottom']}
+        stop: 0 {colors['background_top']},
+        stop: 1 {colors['background_bottom']}
     );
 }}
 
 QWidget {{
     font-family: {FONTS['ui']};
     font-size: {FONT_SIZES['base']};  /* Updated to 11pt for WCAG AA */
-    color: {COLORS['text_primary']};
+    color: {colors['text_primary']};
     background-color: transparent;
 }}
 
@@ -78,14 +150,14 @@ QFrame[class="leftnav"],
 QFrame[class="workspace"],
 QFrame[class="inspector"],
 QFrame[class="dock"] {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 8px;
 }}
 
 .card {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 8px;
     padding: 8px;
 }}
@@ -93,7 +165,7 @@ QFrame[class="dock"] {{
 /* ============================= LABELS ============================= */
 QLabel {{
     background-color: transparent;
-    color: {COLORS['text_primary']};
+    color: {colors['text_primary']};
 }}
 
 QLabel[class="appname"] {{
@@ -103,7 +175,7 @@ QLabel[class="appname"] {{
 }}
 
 QLabel[class="muted"] {{
-    color: {COLORS['text_secondary']};
+    color: {colors['text_secondary']};
     font-size: {FONT_SIZES['xs']};  /* 9pt - minimum for non-essential text */
 }}
 
@@ -119,7 +191,7 @@ QLabel[class="status"] {{
 
 QLabel[class="pill"] {{
     background-color: #EFE6D8;
-    border: 1px solid {COLORS['border']};
+    border: 1px solid {colors['border']};
     border-radius: 10px;
     padding: 2px 8px;
     font-size: 8pt;
@@ -151,7 +223,7 @@ QLabel[class="risk"][risk="expert"] {{
 
 QLabel[class="impact"] {{
     background-color: #E8E0D3;
-    border: 1px solid {COLORS['border']};
+    border: 1px solid {colors['border']};
     border-radius: 8px;
     padding: 2px 6px;
     font-size: 8pt;
@@ -159,12 +231,12 @@ QLabel[class="impact"] {{
 
 /* ============================= BUTTONS ============================= */
 QPushButton {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
     padding: 6px 14px;
     min-height: 24px;
-    color: {COLORS['text_primary']};
+    color: {colors['text_primary']};
 }}
 
 QPushButton:hover {{
@@ -178,29 +250,29 @@ QPushButton:pressed {{
 
 QPushButton:disabled {{
     background-color: #F5F1EA;
-    color: {COLORS['text_disabled']};
-    border-color: {COLORS['border']};
+    color: {colors['text_disabled']};
+    border-color: {colors['border']};
 }}
 
 QPushButton:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
     outline: 2px solid rgba(208, 122, 45, 0.3);
     outline-offset: 2px;
 }}
 
 QPushButton[class="primary"] {{
-    background-color: {COLORS['accent']};
+    background-color: {colors['accent']};
     color: white;
     border: none;
     font-weight: 600;
 }}
 
 QPushButton[class="primary"]:hover {{
-    background-color: {COLORS['accent_hover']};
+    background-color: {colors['accent_hover']};
 }}
 
 QPushButton[class="primary"]:pressed {{
-    background-color: {COLORS['accent_pressed']};
+    background-color: {colors['accent_pressed']};
 }}
 
 QPushButton[class="ghost"] {{
@@ -227,12 +299,12 @@ QToolButton:hover {{
 
 /* ============================= INPUT FIELDS ============================= */
 QLineEdit {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
     padding: 6px 8px;
     min-height: 24px;
-    selection-background-color: {COLORS['accent']};
+    selection-background-color: {colors['accent']};
     selection-color: white;
 }}
 
@@ -241,15 +313,15 @@ QLineEdit:hover {{
 }}
 
 QLineEdit:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
     outline: 2px solid rgba(208, 122, 45, 0.3);
     outline-offset: 2px;
     padding: 5px 7px;
 }}
 
 QComboBox {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
     padding: 6px 8px;
     min-height: 24px;
@@ -260,7 +332,7 @@ QComboBox:hover {{
 }}
 
 QComboBox:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
     outline: 2px solid rgba(208, 122, 45, 0.3);
     outline-offset: 2px;
 }}
@@ -273,24 +345,24 @@ QComboBox::drop-down {{
 QComboBox::down-arrow {{
     image: none;
     border: 4px solid transparent;
-    border-top-color: {COLORS['text_secondary']};
+    border-top-color: {colors['text_secondary']};
     width: 0;
     height: 0;
 }}
 
 QComboBox QAbstractItemView {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
-    selection-background-color: {COLORS['accent']};
+    selection-background-color: {colors['accent']};
     selection-color: white;
     outline: none;
 }}
 
 /* ============================= LIST WIDGET ============================= */
 QListWidget {{
-    background-color: {COLORS['card']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
     outline: none;
     padding: 4px;
@@ -306,24 +378,24 @@ QListWidget::item:hover {{
 }}
 
 QListWidget::item:selected {{
-    background-color: {COLORS['accent']};
+    background-color: {colors['accent']};
     color: white;
 }}
 
 QListWidget::item:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
     outline: 2px solid rgba(208, 122, 45, 0.3);
 }}
 
 QListWidget:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
 }}
 
 /* ============================= TABS ============================= */
 QTabWidget::pane {{
-    border: 1px solid {COLORS['border']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
-    background-color: {COLORS['card']};
+    background-color: {colors['card']};
 }}
 
 QTabBar::tab {{
@@ -332,25 +404,25 @@ QTabBar::tab {{
     border-bottom: 2px solid transparent;
     padding: 8px 14px;
     min-width: 80px;
-    color: {COLORS['text_secondary']};
+    color: {colors['text_secondary']};
     font-weight: 600;
 }}
 
 QTabBar::tab:selected {{
-    color: {COLORS['accent']};
-    border-bottom-color: {COLORS['accent']};
+    color: {colors['accent']};
+    border-bottom-color: {colors['accent']};
 }}
 
 QTabBar::tab:hover {{
-    color: {COLORS['text_primary']};
+    color: {colors['text_primary']};
     background-color: #F3EEE6;
 }}
 
 /* ============================= TEXT EDITS ============================= */
 QPlainTextEdit {{
-    background-color: {COLORS['card']};
-    color: {COLORS['text_primary']};
-    border: 1px solid {COLORS['border']};
+    background-color: {colors['card']};
+    color: {colors['text_primary']};
+    border: 1px solid {colors['border']};
     border-radius: 6px;
     padding: 8px;
     font-family: {FONTS['code']};
@@ -358,15 +430,15 @@ QPlainTextEdit {{
 }}
 
 QPlainTextEdit[class="console"] {{
-    background-color: {COLORS['dark_bg']};
-    color: {COLORS['dark_fg']};
+    background-color: {colors['dark_bg']};
+    color: {colors['dark_fg']};
     border: 1px solid #2A2724;
 }}
 
 QPlainTextEdit[class="inspectorbody"] {{
     background-color: #F7F2E9;
-    color: {COLORS['text_primary']};
-    border: 1px solid {COLORS['border']};
+    color: {colors['text_primary']};
+    border: 1px solid {colors['border']};
 }}
 
 /* ============================= SCROLL BAR ============================= */
@@ -396,16 +468,16 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{
 }}
 
 QSplitter::handle {{
-    background-color: {COLORS['border']};
+    background-color: {colors['border']};
 }}
 
 QSplitter::handle:hover {{
-    background-color: {COLORS['accent']};
+    background-color: {colors['accent']};
 }}
 
 QToolTip {{
-    background-color: {COLORS['dark_bg']};
-    color: {COLORS['dark_fg']};
+    background-color: {colors['dark_bg']};
+    color: {colors['dark_fg']};
     border: 1px solid #2A2724;
     border-radius: 6px;
     padding: 6px 8px;
@@ -416,25 +488,25 @@ QToolTip {{
 /* Enhanced focus indicators for WCAG AA compliance */
 
 QCheckBox:focus, QRadioButton:focus {{
-    outline: 2px solid {COLORS['accent']};
+    outline: 2px solid {colors['accent']};
     outline-offset: 4px;
 }}
 
 QTextEdit:focus, QPlainTextEdit:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
     outline: 2px solid rgba(208, 122, 45, 0.3);
     outline-offset: 2px;
 }}
 
 QSpinBox:focus, QDoubleSpinBox:focus {{
-    border: 2px solid {COLORS['accent']};
+    border: 2px solid {colors['accent']};
     outline: 2px solid rgba(208, 122, 45, 0.3);
     outline-offset: 2px;
 }}
 
 /* Ensure all interactive elements have visible focus */
 *:focus {{
-    outline: 2px solid {COLORS['accent']};
+    outline: 2px solid {colors['accent']};
     outline-offset: 2px;
 }}
 
@@ -449,6 +521,19 @@ QSpinBox:focus, QDoubleSpinBox:focus {{
 """
 
 
-def apply_stylesheet(app):
-    """Apply the stylesheet to the application."""
-    app.setStyleSheet(FLUENT_QSS)
+# Global theme manager instance
+theme_manager = ThemeManager()
+
+# Backward compatibility: Generate default stylesheet
+FLUENT_QSS = theme_manager.build_stylesheet("light")
+
+
+def apply_stylesheet(app, theme="light"):
+    """
+    Apply the stylesheet to the application.
+
+    Args:
+        app: QApplication instance
+        theme: Theme name ("light" or "dark")
+    """
+    theme_manager.switch_theme(app, theme)
