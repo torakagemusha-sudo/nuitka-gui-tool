@@ -79,7 +79,10 @@ class PlatformDetector:
                 timeout=5
             )
             return result.returncode == 0
-        except Exception:
+        except (subprocess.TimeoutExpired, FileNotFoundError, PermissionError):
+            return False
+        except subprocess.SubprocessError:
+            # Log unexpected subprocess errors if needed
             return False
 
     @staticmethod
@@ -100,7 +103,10 @@ class PlatformDetector:
                     return output
                 return output
             return "Unknown"
-        except Exception:
+        except (subprocess.TimeoutExpired, FileNotFoundError, PermissionError):
+            return "Not installed"
+        except subprocess.SubprocessError:
+            # Log unexpected subprocess errors if needed
             return "Not installed"
 
     @staticmethod

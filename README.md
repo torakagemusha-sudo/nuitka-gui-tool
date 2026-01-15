@@ -10,18 +10,29 @@ A graphical user interface for the Nuitka Python Compiler. This tool provides an
 - **Configuration Management**: Save and load compilation configurations as JSON files
 - **Real-Time Output**: View compilation progress and output in real-time
 - **Command Preview**: See the exact Nuitka command that will be executed
-- **No Dependencies**: Built with Python's standard library (tkinter) - no external packages required except Nuitka itself
+- **Modern UI**: Built with PySide6 (Qt for Python) featuring a clean, professional interface
+- **Cross-Platform**: Works seamlessly on Windows, macOS, and Linux
 
 ## Requirements
 
-- Python 3.6 or higher
+- Python 3.8 or higher
+- PySide6 (`pip install PySide6`)
 - Nuitka (`pip install nuitka`)
-- tkinter (usually included with Python)
 
 ## Installation
 
-1. Clone or download this repository
-2. Install Nuitka:
+1. Clone or download this repository:
+   ```bash
+   git clone https://github.com/yourusername/nuitka-gui-tool.git
+   cd nuitka-gui-tool
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Install Nuitka:
    ```bash
    pip install nuitka
    ```
@@ -30,10 +41,10 @@ A graphical user interface for the Nuitka Python Compiler. This tool provides an
 
 Run the GUI:
 ```bash
-python nuitka_gui.py
+python main.py
 ```
 
-Or on Windows, you can double-click `nuitka_gui.py`
+Or on Windows, you can double-click `main.py`
 
 ### Basic Workflow
 
@@ -95,7 +106,7 @@ Or on Windows, you can double-click `nuitka_gui.py`
 ### Output & Plugins
 - Output verbosity control
 - Progress bar styles
-- Nuitka plugins (tkinter, numpy, matplotlib, PyQt, etc.)
+- Nuitka plugins (PySide6, numpy, matplotlib, PyQt, etc.)
 - Warning configuration
 
 ## Configuration Files
@@ -134,19 +145,52 @@ Example configurations are available in the `configs/examples/` directory.
 
 ## Compiling the GUI Itself
 
-Since this is a tkinter application, you can compile it with Nuitka:
+Since this is a PySide6 application, you can compile it with Nuitka:
 
 ```bash
-python -m nuitka --mode=onefile --enable-plugin=tk-inter nuitka_gui.py
+python -m nuitka --standalone --enable-plugin=pyside6 main.py
+```
+
+For a single-file executable:
+
+```bash
+python -m nuitka --onefile --enable-plugin=pyside6 main.py
 ```
 
 Or use the GUI itself to compile itself!
+
+## Project Structure
+
+```
+nuitka-gui-tool/
+├── main.py              # Application entry point
+├── requirements.txt     # Python dependencies
+├── README.md           # This file
+├── configs/            # Configuration file examples
+├── assets/             # Application resources
+└── src/
+    ├── app.py          # Main application class
+    ├── core/           # Core functionality
+    │   ├── command_builder.py    # Nuitka command generation
+    │   ├── config.py            # Configuration management
+    │   ├── executor.py          # Compilation execution
+    │   ├── platform_detector.py # OS detection
+    │   ├── setting_definitions.py # Settings schema
+    │   └── validator.py         # Input validation
+    ├── ui/             # User interface components
+    │   ├── main_window.py       # Main window
+    │   ├── styles.py            # UI styling
+    │   ├── tab_*.py             # Tab implementations
+    │   └── widgets.py           # Custom widgets
+    └── utils/          # Utility functions
+        └── constants.py         # Application constants
+```
 
 ## Tips
 
 - **Standalone Mode**: Recommended for distributing applications - includes all dependencies
 - **One-File Mode**: Creates a single executable (larger file, slightly slower startup)
-- **Plugins**: Enable the appropriate plugin for frameworks you use (tk-inter, numpy, pyqt5, etc.)
+- **Plugins**: Enable the appropriate plugin for frameworks you use (pyside6, numpy, pyqt5, etc.)
 - **Follow Imports**: Usually should be enabled for standalone/onefile modes
 - **Icons**: Windows accepts .ico or .png files, macOS accepts .icns or .png files
 
@@ -184,6 +228,22 @@ Or use the GUI itself to compile itself!
 
 - [Nuitka Official Documentation](https://nuitka.net/user-documentation/user-manual.html)
 - [Nuitka GitHub Repository](https://github.com/Nuitka/Nuitka)
+- [PySide6 Documentation](https://doc.qt.io/qtforpython-6/)
+
+## Known Issues
+
+Some bugs and improvements are being tracked and will be addressed in future releases:
+
+- Error handling improvements needed for file operations
+- Better user feedback for configuration errors
+- Enhanced validation for compilation settings
+- Platform-specific feature testing
+
+See the [Issues](../../issues) page for detailed bug reports and planned improvements.
+
+## Development Status
+
+This project is actively maintained. Contributions and bug reports are welcome!
 
 ## License
 

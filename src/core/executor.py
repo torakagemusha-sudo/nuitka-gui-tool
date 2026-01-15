@@ -5,7 +5,11 @@ import subprocess
 import threading
 import queue
 import time
+import logging
 from enum import Enum
+
+# Set up logging for executor operations
+logger = logging.getLogger(__name__)
 
 
 class CompilationStatus(Enum):
@@ -69,8 +73,14 @@ class CompilationExecutor:
                 time.sleep(0.5)
                 if self.process.poll() is None:
                     self.process.kill()
+            except subprocess.TimeoutExpired:
+                logger.warning("Process did not terminate gracefully, forcing kill")
+                if self.process:
+                    self.process.kill()
+            except (ProcessLookupError, PermissionError) as e:
+                logger.error(f"Failed to stop compilation process: {e}")
             except Exception as e:
-                print(f"Error stopping process: {e}")
+                logger.error(f"Unexpected error stopping process: {e}")
 
         return True
 
@@ -120,14 +130,19 @@ class CompilationExecutor:
                 universal_newlines=True
             )
 
-            # Read output line by line
-            for line in self.process.stdout:
-                if self.stop_flag:
-                    break
+            # Read output line by line with defensive check
+            if self.process.stdout:
+                for line in self.process.stdout:
+                    if self.stop_flag:
+                        break
 
-                # Send line to callback
+                    # Send line to callback
+                    if self.output_callback:
+                        self.output_callback(line.rstrip('\n'))
+            else:
+                logger.error("Failed to capture process output stream")
                 if self.output_callback:
-                    self.output_callback(line.rstrip('\n'))
+                    self.output_callback("Error: Unable to capture compilation output")
 
             # Wait for process to complete
             self.return_code = self.process.wait()
@@ -141,13 +156,37 @@ class CompilationExecutor:
             else:
                 self.status = CompilationStatus.ERROR
 
+        except FileNotFoundError as e:
+            self.end_time = time.time()
+            self.status = CompilationStatus.ERROR
+            self.return_code = -1
+            logger.error(f"Compilation command not found: {e}")
+            if self.output_callback:
+                self.output_callback(f"\nError: Compilation command not found. Is Nuitka installed?")
+
+        except PermissionError as e:
+            self.end_time = time.time()
+            self.status = CompilationStatus.ERROR
+            self.return_code = -1
+            logger.error(f"Permission denied running compilation: {e}")
+            if self.output_callback:
+                self.output_callback(f"\nError: Permission denied running compilation")
+
+        except subprocess.SubprocessError as e:
+            self.end_time = time.time()
+            self.status = CompilationStatus.ERROR
+            self.return_code = -1
+            logger.error(f"Subprocess error during compilation: {e}")
+            if self.output_callback:
+                self.output_callback(f"\nError running compilation: {e}")
+
         except Exception as e:
             self.end_time = time.time()
             self.status = CompilationStatus.ERROR
             self.return_code = -1
-
+            logger.error(f"Unexpected error during compilation: {e}")
             if self.output_callback:
-                self.output_callback(f"\nError running compilation: {e}")
+                self.output_callback(f"\nUnexpected error: {e}")
 
         finally:
             # Call completion callback
