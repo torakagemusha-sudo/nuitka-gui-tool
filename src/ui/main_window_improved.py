@@ -184,6 +184,15 @@ class MainWindow(QWidget):
         export_btn.clicked.connect(self.export_placeholder)
         right_layout.addWidget(export_btn)
 
+        # Theme toggle button
+        self.theme_toggle_btn = QPushButton()
+        self.theme_toggle_btn.setProperty("class", "ghost")
+        self.theme_toggle_btn.setFixedSize(32, 32)
+        self.theme_toggle_btn.setToolTip("Toggle theme (Ctrl+T)")
+        self.theme_toggle_btn.clicked.connect(self.toggle_theme)
+        self._update_theme_icon()
+        right_layout.addWidget(self.theme_toggle_btn)
+
         help_btn = QPushButton("Help")
         help_btn.setProperty("class", "ghost")
         help_btn.clicked.connect(self.app.open_nuitka_docs)
@@ -549,6 +558,12 @@ class MainWindow(QWidget):
         else:
             self.project_path.setText(str(Path.cwd()))
 
+        # Load and apply theme preference
+        theme_pref = self.config.get("app.theme", "light")
+        from .styles import theme_manager
+        theme_manager.switch_theme(self.app.app, theme_pref)
+        self._update_theme_icon()
+
         self.refresh_flag_plan()
 
     def save_to_config(self):
@@ -727,3 +742,36 @@ class MainWindow(QWidget):
             for key, old, new in changes:
                 self.append_output(f"  - {key}: {old} -> {new}\n")
         self.console_tabs.setCurrentIndex(1)
+
+    def toggle_theme(self):
+        """Toggle between light and dark themes."""
+        from .styles import theme_manager
+
+        # Determine new theme
+        current = theme_manager.current_theme
+        new_theme = "dark" if current == "light" else "light"
+
+        # Save preference to config
+        self.config.set("app.theme", new_theme)
+        self.config.save(self.config.get_file_path())
+
+        # Switch theme
+        theme_manager.switch_theme(self.app.app, new_theme)
+        self._update_theme_icon()
+
+        # Update status
+        self.update_status(f"Switched to {new_theme} theme", "success")
+
+    def _update_theme_icon(self):
+        """Update theme toggle button icon."""
+        from .styles import theme_manager
+        theme = theme_manager.current_theme
+
+        # Use moon icon for light mode (clicking will go to dark)
+        # Use sun icon for dark mode (clicking will go to light)
+        if theme == "dark":
+            self.theme_toggle_btn.setText("☀")
+            self.theme_toggle_btn.setAccessibleName("Switch to light theme")
+        else:
+            self.theme_toggle_btn.setText("🌙")
+            self.theme_toggle_btn.setAccessibleName("Switch to dark theme")
