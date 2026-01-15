@@ -1,0 +1,123 @@
+{
+  "basic": {
+    "input_file": "",
+    "mode": "onefile",
+    "output_dir": "dist",
+    "output_filename": "",
+    "compiler": "auto",
+    "python_flags": [
+      "no_site",
+      "no_asserts",
+      "no_docstrings"
+    ],
+    "msvc_version": "latest",
+    "remove_output": true
+  },
+  "modules": {
+    "include_packages": [],
+    "include_modules": [],
+    "follow_imports": true,
+    "follow_stdlib": false,
+    "follow_to": [],
+    "nofollow_to": [
+      "*.tests",
+      "*.testing",
+      "*.test"
+    ],
+    "package_configs": []
+  },
+  "data": {
+    "package_data": [],
+    "data_files": [],
+    "data_dirs": [],
+    "external_data": [],
+    "exclude_patterns": [
+      "*.pyc",
+      "__pycache__",
+      "*.pyx",
+      "*.pyd"
+    ],
+    "dll_excludes": [],
+    "distributions": []
+  },
+  "platform": {
+    "windows": {
+      "icon": "",
+      "console_mode": "disable",
+      "uac_admin": false,
+      "uac_uiaccess": false,
+      "splash_screen": "",
+      "company_name": "",
+      "product_name": "My Application",
+      "product_version": "1.0.0.0",
+      "file_version": "1.0.0.0",
+      "file_description": "My Application",
+      "copyright": "Copyright © 2025",
+      "trademarks": ""
+    },
+    "macos": {
+      "create_bundle": true,
+      "icon": "",
+      "app_name": "MyApp",
+      "bundle_id": "com.example.myapp",
+      "app_version": "1.0.0",
+      "protected_resources": []
+    },
+    "linux": {
+      "icon": ""
+    }
+  },
+  "advanced": {
+    "lto": "yes",
+    "static_libpython": false,
+    "jobs": 0,
+    "low_memory": false,
+    "onefile_tempdir_spec": "",
+    "onefile_temp_mode": "cached",
+    "full_compat": false,
+    "file_reference_choice": "runtime",
+    "module_name_choice": "runtime",
+    "debug": false,
+    "unstripped": false,
+    "generate_c_only": false,
+    "trace_execution": false,
+    "xml_output": "",
+    "disable_ccache": false,
+    "disable_bytecode_cache": false,
+    "pgo_c": false,
+    "pgo_args": "",
+    "pgo_executable": "",
+    "force_environment": [],
+    "deployment": false
+  },
+  "output": {
+    "quiet": false,
+    "verbose": false,
+    "verbose_output": "",
+    "show_progress": true,
+    "progress_mode": "auto",
+    "show_memory": false,
+    "show_scons": false,
+    "report_file": "",
+    "report_diffable": false,
+    "report_templates": [],
+    "report_user_data": [],
+    "warn_implicit_exceptions": false,
+    "warn_unusual_code": false,
+    "assume_yes_for_downloads": true,
+    "nowarn_mnemonics": []
+  },
+  "plugins": {
+    "enabled": [
+      "anti-bloat"
+    ],
+    "disabled": [],
+    "user_plugins": [],
+    "no_detection": false,
+    "module_parameters": [],
+    "anti_bloat": {
+      "show_changes": false,
+      "custom_choices": {}
+    }
+  }
+}

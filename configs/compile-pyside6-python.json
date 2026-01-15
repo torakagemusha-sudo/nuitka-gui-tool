@@ -1,0 +1,112 @@
+{
+  "basic": {
+    "input_file": "X:/__Workspaces/Software_Development/Projects/DevOps_TeamTF/TF_Docs/app/main.py",
+    "mode": "standalone",
+    "output_dir": "X:/__Workspaces/Software_Development/Projects/DevOps_TeamTF/compiled-builds",
+    "output_filename": "TF-Docs",
+    "compiler": "auto",
+    "python_flags": [],
+    "msvc_version": "latest",
+    "remove_output": true
+  },
+  "modules": {
+    "include_packages": [],
+    "include_modules": [],
+    "follow_imports": true,
+    "follow_stdlib": false,
+    "follow_to": [],
+    "nofollow_to": [],
+    "package_configs": []
+  },
+  "data": {
+    "package_data": [],
+    "data_files": [],
+    "data_dirs": [],
+    "external_data": [],
+    "exclude_patterns": [],
+    "dll_excludes": [],
+    "distributions": []
+  },
+  "platform": {
+    "windows": {
+      "icon": "C:/Windows/System32/icons/head.ico",
+      "console_mode": "auto",
+      "uac_admin": true,
+      "uac_uiaccess": false,
+      "splash_screen": "",
+      "company_name": "ToraFirma Systems",
+      "product_name": "TF-Docs",
+      "product_version": "0.1",
+      "file_version": "0.1",
+      "file_description": "",
+      "copyright": "ToraFirma 2026 ",
+      "trademarks": ""
+    },
+    "macos": {
+      "create_bundle": false,
+      "icon": "",
+      "app_name": "",
+      "bundle_id": "",
+      "app_version": "",
+      "protected_resources": []
+    },
+    "linux": {
+      "icon": ""
+    }
+  },
+  "advanced": {
+    "lto": "auto",
+    "static_libpython": false,
+    "jobs": 0,
+    "low_memory": false,
+    "onefile_tempdir_spec": "",
+    "onefile_temp_mode": "auto",
+    "full_compat": false,
+    "file_reference_choice": "runtime",
+    "module_name_choice": "runtime",
+    "debug": true,
+    "unstripped": false,
+    "generate_c_only": false,
+    "trace_execution": true,
+    "xml_output": "",
+    "disable_ccache": false,
+    "disable_bytecode_cache": false,
+    "pgo_c": false,
+    "pgo_args": "",
+    "pgo_executable": "",
+    "force_environment": [],
+    "deployment": false
+  },
+  "output": {
+    "quiet": false,
+    "verbose": true,
+    "verbose_output": "",
+    "show_progress": true,
+    "progress_mode": "auto",
+    "show_memory": true,
+    "show_scons": false,
+    "report_file": "",
+    "report_diffable": false,
+    "report_templates": [],
+    "report_user_data": [],
+    "warn_implicit_exceptions": false,
+    "warn_unusual_code": false,
+    "assume_yes_for_downloads": true,
+    "nowarn_mnemonics": []
+  },
+  "plugins": {
+    "enabled": [
+      "anti-bloat",
+      "pyside6",
+      "implicit-imports"
+    ],
+    "disabled": [],
+    "user_plugins": [],
+    "no_detection": false,
+    "module_parameters": [],
+    "anti_bloat": {
+      "show_changes": false,
+      "custom_choices": {}
+    }
+  }
+}
