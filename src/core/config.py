@@ -2,8 +2,12 @@
 Configuration management for Nuitka GUI.
 """
 import json
+import logging
 from pathlib import Path
 from typing import Any, Optional
+
+# Set up logging for configuration operations
+logger = logging.getLogger(__name__)
 
 
 class ConfigManager:
@@ -186,8 +190,14 @@ class ConfigManager:
 
             self._file_path = filepath
             return True
+        except (IOError, PermissionError) as e:
+            logger.error(f"Cannot write to configuration file '{filepath}': {e}")
+            return False
+        except TypeError as e:
+            logger.error(f"Invalid configuration data (cannot serialize to JSON): {e}")
+            return False
         except Exception as e:
-            print(f"Error saving configuration: {e}")
+            logger.error(f"Unexpected error saving configuration: {e}")
             return False
 
     def load(self, filepath):
@@ -203,6 +213,7 @@ class ConfigManager:
         try:
             filepath = Path(filepath)
             if not filepath.exists():
+                logger.warning(f"Configuration file not found: {filepath}")
                 return False
 
             with open(filepath, 'r', encoding='utf-8') as f:
@@ -216,8 +227,14 @@ class ConfigManager:
 
             self._file_path = filepath
             return True
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in configuration file '{filepath}': {e}")
+            return False
+        except (IOError, PermissionError) as e:
+            logger.error(f"Cannot read configuration file '{filepath}': {e}")
+            return False
         except Exception as e:
-            print(f"Error loading configuration: {e}")
+            logger.error(f"Unexpected error loading configuration: {e}")
             return False
 
     def _merge_configs(self, default, loaded):

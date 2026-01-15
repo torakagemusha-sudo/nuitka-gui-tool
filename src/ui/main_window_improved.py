@@ -665,17 +665,22 @@ class MainWindow(QWidget):
 
         files = [p for p in base_path.rglob("*") if p.is_file()]
         for path in files:
-            row = self.artifacts_table.rowCount()
-            self.artifacts_table.insertRow(row)
-            rel = str(path.relative_to(base_path))
-            size = path.stat().st_size
-            mtime = path.stat().st_mtime
-            digest = self._hash_file(path)
+            try:
+                row = self.artifacts_table.rowCount()
+                self.artifacts_table.insertRow(row)
+                rel = str(path.relative_to(base_path))
+                stat_info = path.stat()
+                size = stat_info.st_size
+                mtime = stat_info.st_mtime
+                digest = self._hash_file(path)
 
-            self.artifacts_table.setItem(row, 0, QTableWidgetItem(rel))
-            self.artifacts_table.setItem(row, 1, QTableWidgetItem(str(size)))
-            self.artifacts_table.setItem(row, 2, QTableWidgetItem(digest))
-            self.artifacts_table.setItem(row, 3, QTableWidgetItem(str(mtime)))
+                self.artifacts_table.setItem(row, 0, QTableWidgetItem(rel))
+                self.artifacts_table.setItem(row, 1, QTableWidgetItem(str(size)))
+                self.artifacts_table.setItem(row, 2, QTableWidgetItem(digest))
+                self.artifacts_table.setItem(row, 3, QTableWidgetItem(str(mtime)))
+            except (OSError, PermissionError) as e:
+                # Skip files that become inaccessible during listing
+                continue
 
     def _hash_file(self, path: Path) -> str:
         hasher = hashlib.sha256()

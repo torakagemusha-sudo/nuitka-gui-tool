@@ -83,8 +83,16 @@ def load_setting_definitions(path: Optional[Path] = None) -> SettingRegistry:
         return _registry_cache
 
     target = path or get_definitions_path()
-    with target.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
+    try:
+        with target.open("r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except FileNotFoundError:
+        raise RuntimeError(f"Settings definition file not found: {target}")
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f"Invalid JSON in settings definition file: {e}")
+    except (IOError, PermissionError) as e:
+        raise RuntimeError(f"Cannot read settings definition file: {e}")
+
     registry = SettingRegistry(data)
     if path is None:
         _registry_cache = registry

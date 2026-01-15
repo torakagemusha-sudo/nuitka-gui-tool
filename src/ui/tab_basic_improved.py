@@ -346,7 +346,7 @@ class TabBasic(QWidget):
         """Validate input file and show visual indicator."""
         path = self.widgets['input_file'].get_path()
 
-        if not path:
+        if not path or not isinstance(path, str):
             self.input_validation.setText("")
             self.input_validation.setStyleSheet("")
         elif os.path.exists(path) and path.endswith('.py'):

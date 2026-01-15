@@ -1,6 +1,8 @@
 """
 Data and resources tab for Nuitka GUI (PySide6 version).
 """
+import os
+
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QScrollArea, QGroupBox, QFrame, QInputDialog, QFileDialog
 )
@@ -123,7 +125,6 @@ class TabData(QWidget):
             return None
 
         # Ask for destination
-        import os
         dest, ok = QInputDialog.getText(
             self,
             "Destination Path",
@@ -143,7 +144,6 @@ class TabData(QWidget):
             return None
 
         # Ask for destination
-        import os
         dest, ok = QInputDialog.getText(
             self,
             "Destination Path",
