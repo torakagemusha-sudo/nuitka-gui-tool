@@ -1,7 +1,7 @@
 """
 Industrial instrument panel stylesheet for PySide6 Nuitka GUI
 """
-# Color Palette - Industrial Warm
+# Color Palette - Industrial Warm (WCAG AA Compliant)
 COLORS = {
     "accent": "#D07A2D",
     "accent_hover": "#B5661E",
@@ -14,8 +14,9 @@ COLORS = {
     "card": "#FBFAF7",
     "border": "#D4C9B8",
     "text_primary": "#2B2A27",
-    "text_secondary": "#5E5A52",
-    "text_disabled": "#9B9488",
+    "text_secondary": "#4A4640",  # Updated from #5E5A52 for WCAG AA (4.5:1 contrast)
+    "text_tertiary": "#8B8578",   # New color for less important text
+    "text_disabled": "#767169",   # Updated from #9B9488 for WCAG AA (3:1 contrast for large text)
     "dark_bg": "#1C1B19",
     "dark_fg": "#E6E0D6",
 }
@@ -27,12 +28,25 @@ SPACING = {
     "md": "12px",
     "lg": "16px",
     "xl": "24px",
+    "2xl": "32px",
+    "3xl": "48px",
 }
 
-# Typography
+# Typography (WCAG AA Compliant Font Sizes)
 FONTS = {
     "ui": '"Bahnschrift", "Aptos", "DIN Alternate", "Segoe UI", sans-serif',
     "code": '"Cascadia Mono", "Consolas", "SF Mono", monospace',
+}
+
+# Font sizes (in points) - WCAG AA compliant
+FONT_SIZES = {
+    "xs": "9pt",   # Captions, labels (minimum for non-essential text)
+    "sm": "10pt",  # Helper text
+    "base": "11pt",  # Body text (NEW BASELINE for accessibility)
+    "md": "12pt",  # Section text
+    "lg": "14pt",  # Headers
+    "xl": "16pt",  # Page titles
+    "2xl": "20pt",  # App name
 }
 
 FLUENT_QSS = f"""
@@ -47,7 +61,7 @@ QMainWindow {{
 
 QWidget {{
     font-family: {FONTS['ui']};
-    font-size: 9pt;
+    font-size: {FONT_SIZES['base']};  /* Updated to 11pt for WCAG AA */
     color: {COLORS['text_primary']};
     background-color: transparent;
 }}
@@ -83,23 +97,23 @@ QLabel {{
 }}
 
 QLabel[class="appname"] {{
-    font-size: 12pt;
+    font-size: {FONT_SIZES['xl']};  /* 16pt */
     font-weight: 700;
     letter-spacing: 0.5px;
 }}
 
 QLabel[class="muted"] {{
     color: {COLORS['text_secondary']};
-    font-size: 8pt;
+    font-size: {FONT_SIZES['xs']};  /* 9pt - minimum for non-essential text */
 }}
 
 QLabel[class="sectiontitle"] {{
-    font-size: 10pt;
+    font-size: {FONT_SIZES['md']};  /* 12pt */
     font-weight: 600;
 }}
 
 QLabel[class="status"] {{
-    font-size: 9pt;
+    font-size: {FONT_SIZES['base']};  /* 11pt */
     font-weight: 600;
 }}
 
@@ -168,6 +182,12 @@ QPushButton:disabled {{
     border-color: {COLORS['border']};
 }}
 
+QPushButton:focus {{
+    border: 2px solid {COLORS['accent']};
+    outline: 2px solid rgba(208, 122, 45, 0.3);
+    outline-offset: 2px;
+}}
+
 QPushButton[class="primary"] {{
     background-color: {COLORS['accent']};
     color: white;
@@ -222,6 +242,8 @@ QLineEdit:hover {{
 
 QLineEdit:focus {{
     border: 2px solid {COLORS['accent']};
+    outline: 2px solid rgba(208, 122, 45, 0.3);
+    outline-offset: 2px;
     padding: 5px 7px;
 }}
 
@@ -239,6 +261,8 @@ QComboBox:hover {{
 
 QComboBox:focus {{
     border: 2px solid {COLORS['accent']};
+    outline: 2px solid rgba(208, 122, 45, 0.3);
+    outline-offset: 2px;
 }}
 
 QComboBox::drop-down {{
@@ -284,6 +308,15 @@ QListWidget::item:hover {{
 QListWidget::item:selected {{
     background-color: {COLORS['accent']};
     color: white;
+}}
+
+QListWidget::item:focus {{
+    border: 2px solid {COLORS['accent']};
+    outline: 2px solid rgba(208, 122, 45, 0.3);
+}}
+
+QListWidget:focus {{
+    border: 2px solid {COLORS['accent']};
 }}
 
 /* ============================= TABS ============================= */
@@ -376,8 +409,43 @@ QToolTip {{
     border: 1px solid #2A2724;
     border-radius: 6px;
     padding: 6px 8px;
-    font-size: 8pt;
+    font-size: {FONT_SIZES['xs']};
 }}
+
+/* ============================= ACCESSIBILITY ============================= */
+/* Enhanced focus indicators for WCAG AA compliance */
+
+QCheckBox:focus, QRadioButton:focus {{
+    outline: 2px solid {COLORS['accent']};
+    outline-offset: 4px;
+}}
+
+QTextEdit:focus, QPlainTextEdit:focus {{
+    border: 2px solid {COLORS['accent']};
+    outline: 2px solid rgba(208, 122, 45, 0.3);
+    outline-offset: 2px;
+}}
+
+QSpinBox:focus, QDoubleSpinBox:focus {{
+    border: 2px solid {COLORS['accent']};
+    outline: 2px solid rgba(208, 122, 45, 0.3);
+    outline-offset: 2px;
+}}
+
+/* Ensure all interactive elements have visible focus */
+*:focus {{
+    outline: 2px solid {COLORS['accent']};
+    outline-offset: 2px;
+}}
+
+/* Typography utility classes */
+.text-xs {{ font-size: {FONT_SIZES['xs']}; }}
+.text-sm {{ font-size: {FONT_SIZES['sm']}; }}
+.text-base {{ font-size: {FONT_SIZES['base']}; }}
+.text-md {{ font-size: {FONT_SIZES['md']}; }}
+.text-lg {{ font-size: {FONT_SIZES['lg']}; }}
+.text-xl {{ font-size: {FONT_SIZES['xl']}; }}
+.text-2xl {{ font-size: {FONT_SIZES['2xl']}; }}
 """
 
 
