@@ -561,7 +561,9 @@ class MainWindow(QWidget):
         # Load and apply theme preference
         theme_pref = self.config.get("app.theme", "light")
         from .styles import theme_manager
-        theme_manager.switch_theme(self.app.app, theme_pref)
+        qapp = QApplication.instance()
+        if qapp:
+            theme_manager.switch_theme(qapp, theme_pref)
         self._update_theme_icon()
 
         self.refresh_flag_plan()

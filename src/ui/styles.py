@@ -430,8 +430,8 @@ QPlainTextEdit {{
 }}
 
 QPlainTextEdit[class="console"] {{
-    background-color: {colors['dark_bg']};
-    color: {colors['dark_fg']};
+    background-color: {colors['console_bg']};
+    color: {colors['console_fg']};
     border: 1px solid #2A2724;
 }}
 
@@ -476,8 +476,8 @@ QSplitter::handle:hover {{
 }}
 
 QToolTip {{
-    background-color: {colors['dark_bg']};
-    color: {colors['dark_fg']};
+    background-color: {colors['console_bg']};
+    color: {colors['console_fg']};
     border: 1px solid #2A2724;
     border-radius: 6px;
     padding: 6px 8px;
