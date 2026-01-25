@@ -243,7 +243,7 @@ See the [Issues](../../issues) page for detailed bug reports and planned improve
 
 ## Development Status
 
-This project is actively maintained. Contributions and bug reports are welcome!
+This project is somewhat maintained. As a solo developer overseeing approximately 50 ongoing projects, engagement, response times, and enthusiasm may vary significantly.
 
 ## License
 
@@ -251,4 +251,4 @@ This GUI tool is provided as-is for use with Nuitka. Nuitka itself is licensed u
 
 ## Contributing
 
-Suggestions and improvements welcome! This tool aims to make Nuitka more accessible to everyone.
+Suggestions and improvements are welcome, though please note that due to the maintainer's workload across multiple projects, responses and merges may take time. This tool aims to make Nuitka more accessible to everyone.
