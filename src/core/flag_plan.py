@@ -3,6 +3,7 @@ Flag plan compilation and rendering.
 """
 from __future__ import annotations
 
+import shlex
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
@@ -170,9 +171,9 @@ def render_command(plan: FlagPlan, python_exe: Optional[str] = None) -> List[str
     args = [python_exe or "python", "-m", "nuitka"]
 
     group_index = {name: idx for idx, name in enumerate(GROUP_ORDER)}
-    plan.flags.sort(key=lambda atom: (group_index.get(atom.group, 99), atom.id))
+    sorted_flags = sorted(plan.flags, key=lambda atom: (group_index.get(atom.group, 99), atom.id))
 
-    for atom in plan.flags:
+    for atom in sorted_flags:
         args.extend(atom.args)
 
     if plan.entry_script:
@@ -183,10 +184,4 @@ def render_command(plan: FlagPlan, python_exe: Optional[str] = None) -> List[str
 
 def render_command_string(plan: FlagPlan, python_exe: Optional[str] = None) -> str:
     args = render_command(plan, python_exe=python_exe)
-    quoted = []
-    for arg in args:
-        if " " in arg and not (arg.startswith('"') and arg.endswith('"')):
-            quoted.append(f'"{arg}"')
-        else:
-            quoted.append(arg)
-    return " ".join(quoted)
+    return " ".join(shlex.quote(arg) for arg in args)

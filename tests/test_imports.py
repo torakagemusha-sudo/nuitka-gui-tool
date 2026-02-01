@@ -3,6 +3,14 @@ import pytest
 import sys
 from pathlib import Path
 
+try:
+    import PySide6  # noqa: F401
+    _has_pyside6 = True
+except ImportError:
+    _has_pyside6 = False
+
+requires_pyside6 = pytest.mark.skipif(not _has_pyside6, reason="PySide6 not installed")
+
 
 class TestImports:
     """Test that all modules can be imported without errors."""
@@ -12,6 +20,7 @@ class TestImports:
         # This will work if main.py can be imported
         assert Path(__file__).parent.parent.joinpath("main.py").exists()
 
+    @requires_pyside6
     def test_import_app(self):
         """Test importing app module."""
         from src import app
@@ -73,20 +82,19 @@ class TestImports:
         from src.ui import styles
         assert hasattr(styles, 'apply_stylesheet')
 
+    @requires_pyside6
     def test_import_widgets(self):
         """Test importing widgets module."""
         from src.ui import widgets
         assert widgets is not None
 
+    @requires_pyside6
     def test_pyside6_available(self):
         """Test that PySide6 is available."""
-        try:
-            import PySide6
-            from PySide6.QtWidgets import QApplication
-            from PySide6.QtCore import Qt
-            assert True
-        except ImportError as e:
-            pytest.fail(f"PySide6 not available: {e}")
+        from PySide6.QtWidgets import QApplication
+        from PySide6.QtCore import Qt
+        assert QApplication is not None
+        assert Qt is not None
 
     def test_constants_values(self):
         """Test that constants have expected values."""

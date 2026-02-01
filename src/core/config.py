@@ -1,6 +1,7 @@
 """
 Configuration management for Nuitka GUI.
 """
+import copy
 import json
 import logging
 from pathlib import Path
@@ -271,12 +272,12 @@ class ConfigManager:
 
     def to_dict(self):
         """
-        Get configuration as dictionary.
+        Get configuration as dictionary (deep copy).
 
         Returns:
             dict: Complete configuration
         """
-        return self._config.copy()
+        return copy.deepcopy(self._config)
 
     def get_file_path(self):
         """

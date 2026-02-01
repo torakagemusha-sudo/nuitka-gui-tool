@@ -1,7 +1,6 @@
 """
 Input validation utilities for Nuitka GUI.
 """
-import os
 import re
 from pathlib import Path
 
@@ -23,10 +22,11 @@ class Validator:
         if not path:
             return False, "File path is required"
 
-        if not os.path.exists(path):
+        p = Path(path)
+        if not p.exists():
             return False, f"File does not exist: {path}"
 
-        if not os.path.isfile(path):
+        if not p.is_file():
             return False, f"Path is not a file: {path}"
 
         return True, ""
@@ -45,10 +45,11 @@ class Validator:
         if not path:
             return False, "Directory path is required"
 
-        if not os.path.exists(path):
+        p = Path(path)
+        if not p.exists():
             return False, f"Directory does not exist: {path}"
 
-        if not os.path.isdir(path):
+        if not p.is_dir():
             return False, f"Path is not a directory: {path}"
 
         return True, ""
@@ -192,7 +193,7 @@ class Validator:
 
         # Validate output directory if specified
         output_dir = config.get('basic.output_dir')
-        if output_dir and not os.path.exists(output_dir):
+        if output_dir and not Path(output_dir).exists():
             warnings.append(f"Output directory '{output_dir}' will be created")
 
         # Validate version numbers

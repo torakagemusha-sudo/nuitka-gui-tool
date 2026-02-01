@@ -15,10 +15,22 @@ COLORS_LIGHT = {
     "background_bottom": "#E6DED2",
     "card": "#FBFAF7",
     "border": "#D4C9B8",
+    "border_hover": "#C5B8A6",
     "text_primary": "#2B2A27",
     "text_secondary": "#4A4640",
     "text_tertiary": "#8B8578",
     "text_disabled": "#767169",
+    # Interactive state colors
+    "hover_bg": "#F1ECE3",
+    "pressed_bg": "#E2DBCF",
+    "disabled_bg": "#F5F1EA",
+    "ghost_hover_bg": "#F5EFE6",
+    "list_hover_bg": "#F3EEE6",
+    "inspector_bg": "#F7F2E9",
+    "impact_bg": "#E8E0D3",
+    "pill_bg": "#EFE6D8",
+    "console_border": "#2A2724",
+    "expert": "#5B4E90",
     # Console colors
     "console_bg": "#1C1B19",
     "console_fg": "#E6E0D6",
@@ -38,11 +50,23 @@ COLORS_DARK = {
     "background_bottom": "#252321",
     "card": "#2B2926",
     "border": "#3D3935",
+    "border_hover": "#4D4840",
     # Text colors (14:1, 7:1, 4.5:1, 3:1 contrast ratios)
     "text_primary": "#E6E0D6",
     "text_secondary": "#B5AFA3",
     "text_tertiary": "#8B8578",
     "text_disabled": "#6B6560",
+    # Interactive state colors
+    "hover_bg": "#353230",
+    "pressed_bg": "#3F3C39",
+    "disabled_bg": "#2E2C29",
+    "ghost_hover_bg": "#353230",
+    "list_hover_bg": "#353230",
+    "inspector_bg": "#322F2C",
+    "impact_bg": "#3D3935",
+    "pill_bg": "#3D3935",
+    "console_border": "#0E0D0C",
+    "expert": "#7B6EB0",
     # Console colors
     "console_bg": "#141312",
     "console_fg": "#E6E0D6",
@@ -190,7 +214,7 @@ QLabel[class="status"] {{
 }}
 
 QLabel[class="pill"] {{
-    background-color: #EFE6D8;
+    background-color: {colors['pill_bg']};
     border: 1px solid {colors['border']};
     border-radius: 10px;
     padding: 2px 8px;
@@ -206,23 +230,23 @@ QLabel[class="risk"] {{
 }}
 
 QLabel[class="risk"][risk="safe"] {{
-    background-color: #3A7C3A;
+    background-color: {colors['success']};
 }}
 
 QLabel[class="risk"][risk="caution"] {{
-    background-color: #C27A2A;
+    background-color: {colors['warning']};
 }}
 
 QLabel[class="risk"][risk="risky"] {{
-    background-color: #B23A3A;
+    background-color: {colors['error']};
 }}
 
 QLabel[class="risk"][risk="expert"] {{
-    background-color: #5B4E90;
+    background-color: {colors['expert']};
 }}
 
 QLabel[class="impact"] {{
-    background-color: #E8E0D3;
+    background-color: {colors['impact_bg']};
     border: 1px solid {colors['border']};
     border-radius: 8px;
     padding: 2px 6px;
@@ -240,16 +264,16 @@ QPushButton {{
 }}
 
 QPushButton:hover {{
-    background-color: #F1ECE3;
-    border-color: #C5B8A6;
+    background-color: {colors['hover_bg']};
+    border-color: {colors['border_hover']};
 }}
 
 QPushButton:pressed {{
-    background-color: #E2DBCF;
+    background-color: {colors['pressed_bg']};
 }}
 
 QPushButton:disabled {{
-    background-color: #F5F1EA;
+    background-color: {colors['disabled_bg']};
     color: {colors['text_disabled']};
     border-color: {colors['border']};
 }}
@@ -282,8 +306,8 @@ QPushButton[class="ghost"] {{
 }}
 
 QPushButton[class="ghost"]:hover {{
-    background-color: #F5EFE6;
-    border-color: #D4C9B8;
+    background-color: {colors['ghost_hover_bg']};
+    border-color: {colors['border']};
 }}
 
 QToolButton {{
@@ -293,8 +317,8 @@ QToolButton {{
 }}
 
 QToolButton:hover {{
-    background-color: #F5EFE6;
-    border-color: #D4C9B8;
+    background-color: {colors['ghost_hover_bg']};
+    border-color: {colors['border']};
 }}
 
 /* ============================= INPUT FIELDS ============================= */
@@ -309,7 +333,7 @@ QLineEdit {{
 }}
 
 QLineEdit:hover {{
-    border-color: #C5B8A6;
+    border-color: {colors['border_hover']};
 }}
 
 QLineEdit:focus {{
@@ -328,7 +352,7 @@ QComboBox {{
 }}
 
 QComboBox:hover {{
-    border-color: #C5B8A6;
+    border-color: {colors['border_hover']};
 }}
 
 QComboBox:focus {{
@@ -374,7 +398,7 @@ QListWidget::item {{
 }}
 
 QListWidget::item:hover {{
-    background-color: #F3EEE6;
+    background-color: {colors['list_hover_bg']};
 }}
 
 QListWidget::item:selected {{
@@ -415,7 +439,7 @@ QTabBar::tab:selected {{
 
 QTabBar::tab:hover {{
     color: {colors['text_primary']};
-    background-color: #F3EEE6;
+    background-color: {colors['list_hover_bg']};
 }}
 
 /* ============================= TEXT EDITS ============================= */
@@ -432,11 +456,11 @@ QPlainTextEdit {{
 QPlainTextEdit[class="console"] {{
     background-color: {colors['console_bg']};
     color: {colors['console_fg']};
-    border: 1px solid #2A2724;
+    border: 1px solid {colors['console_border']};
 }}
 
 QPlainTextEdit[class="inspectorbody"] {{
-    background-color: #F7F2E9;
+    background-color: {colors['inspector_bg']};
     color: {colors['text_primary']};
     border: 1px solid {colors['border']};
 }}
@@ -449,14 +473,14 @@ QScrollBar:vertical {{
 }}
 
 QScrollBar::handle:vertical {{
-    background-color: #C9BDAA;
+    background-color: {colors['border']};
     min-height: 30px;
     border-radius: 6px;
     margin: 2px;
 }}
 
 QScrollBar::handle:vertical:hover {{
-    background-color: #B3A691;
+    background-color: {colors['border_hover']};
 }}
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
@@ -478,7 +502,7 @@ QSplitter::handle:hover {{
 QToolTip {{
     background-color: {colors['console_bg']};
     color: {colors['console_fg']};
-    border: 1px solid #2A2724;
+    border: 1px solid {colors['console_border']};
     border-radius: 6px;
     padding: 6px 8px;
     font-size: {FONT_SIZES['xs']};
@@ -523,9 +547,6 @@ QSpinBox:focus, QDoubleSpinBox:focus {{
 
 # Global theme manager instance
 theme_manager = ThemeManager()
-
-# Backward compatibility: Generate default stylesheet
-FLUENT_QSS = theme_manager.build_stylesheet("light")
 
 
 def apply_stylesheet(app, theme="light"):
