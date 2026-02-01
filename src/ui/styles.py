@@ -30,6 +30,7 @@ COLORS_LIGHT = {
     "impact_bg": "#E8E0D3",
     "pill_bg": "#EFE6D8",
     "console_border": "#2A2724",
+    "expert": "#5B4E90",
     # Console colors
     "console_bg": "#1C1B19",
     "console_fg": "#E6E0D6",
@@ -65,6 +66,7 @@ COLORS_DARK = {
     "impact_bg": "#3D3935",
     "pill_bg": "#3D3935",
     "console_border": "#0E0D0C",
+    "expert": "#7B6EB0",
     # Console colors
     "console_bg": "#141312",
     "console_fg": "#E6E0D6",
@@ -240,7 +242,7 @@ QLabel[class="risk"][risk="risky"] {{
 }}
 
 QLabel[class="risk"][risk="expert"] {{
-    background-color: #5B4E90;
+    background-color: {colors['expert']};
 }}
 
 QLabel[class="impact"] {{
@@ -545,10 +547,6 @@ QSpinBox:focus, QDoubleSpinBox:focus {{
 
 # Global theme manager instance
 theme_manager = ThemeManager()
-
-# Backward compatibility: Generate default stylesheet
-FLUENT_QSS = theme_manager.build_stylesheet("light")
-
 
 def apply_stylesheet(app, theme="light"):
     """

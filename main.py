@@ -10,11 +10,6 @@ import os
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt, QLibraryInfo
-from PySide6.QtGui import QScreen
-
-# Add src directory to path
-src_path = Path(__file__).parent / 'src'
-sys.path.insert(0, str(src_path))
 
 from src.app import NuitkaGUI
 from src.ui.styles import apply_stylesheet
@@ -47,11 +42,12 @@ def main():
     window = NuitkaGUI()
 
     # Center window on screen
-    screen = QScreen.availableGeometry(QApplication.primaryScreen())
-    window_rect = window.frameGeometry()
-    center_point = screen.center()
-    window_rect.moveCenter(center_point)
-    window.move(window_rect.topLeft())
+    primary = QApplication.primaryScreen()
+    if primary is not None:
+        screen = primary.availableGeometry()
+        window_rect = window.frameGeometry()
+        window_rect.moveCenter(screen.center())
+        window.move(window_rect.topLeft())
 
     # Show window
     window.show()

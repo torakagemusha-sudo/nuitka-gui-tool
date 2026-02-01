@@ -10,16 +10,20 @@ import subprocess
 class PlatformDetector:
     """Detects platform and available compilers."""
 
+    _cached_platform = None
+
     @staticmethod
     def get_platform():
         """Get platform name: 'windows', 'darwin', or 'linux'."""
-        system = platform.system().lower()
-        if system == 'windows':
-            return 'windows'
-        elif system == 'darwin':
-            return 'darwin'
-        else:
-            return 'linux'
+        if PlatformDetector._cached_platform is None:
+            system = platform.system().lower()
+            if system == 'windows':
+                PlatformDetector._cached_platform = 'windows'
+            elif system == 'darwin':
+                PlatformDetector._cached_platform = 'darwin'
+            else:
+                PlatformDetector._cached_platform = 'linux'
+        return PlatformDetector._cached_platform
 
     @staticmethod
     def is_windows():

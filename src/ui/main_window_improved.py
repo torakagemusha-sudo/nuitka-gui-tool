@@ -4,7 +4,7 @@ Improved main window with engineer-focused instrument panel UI (PySide6).
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTabWidget,
     QPlainTextEdit, QSplitter, QFrame, QLineEdit, QComboBox, QListWidget,
-    QStackedWidget, QTableWidget, QTableWidgetItem, QApplication
+    QStackedWidget, QTableWidget, QTableWidgetItem, QSizePolicy, QApplication
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPainter, QColor, QDesktopServices, QUrl
@@ -569,8 +569,15 @@ class MainWindow(QWidget):
         self.refresh_flag_plan()
 
     def save_to_config(self):
-        """Save values from UI into config."""
-        pass
+        """Save values from UI into config.
+
+        DataDrivenTab widgets write to config on every widget change
+        event, so the config is always in sync with the UI.  This
+        method exists to satisfy the interface expected by NuitkaGUI
+        (app.py) which calls it before save/compile operations.
+        """
+        # Config is already up-to-date — DataDrivenTab._on_change()
+        # writes to self.config immediately on every widget change.
 
     def copy_command(self):
         """Copy command preview to clipboard."""

@@ -19,6 +19,13 @@ class CommandBuilder:
         """
         self.config = config_manager
         self.registry = load_setting_definitions()
+        self._plan = None
+
+    def _get_plan(self):
+        """Compile and cache the flag plan for the current config snapshot."""
+        if self._plan is None:
+            self._plan = compile_flag_plan(self.config.to_dict(), self.registry)
+        return self._plan
 
     def build(self):
         """
@@ -27,8 +34,8 @@ class CommandBuilder:
         Returns:
             list: Command arguments
         """
-        plan = compile_flag_plan(self.config.to_dict(), self.registry)
-        return render_command(plan, python_exe=sys.executable)
+        return render_command(self._get_plan(), python_exe=sys.executable)
+
     def get_command_string(self):
         """
         Get command as a single string.
@@ -36,5 +43,4 @@ class CommandBuilder:
         Returns:
             str: Command string
         """
-        plan = compile_flag_plan(self.config.to_dict(), self.registry)
-        return render_command_string(plan, python_exe=sys.executable)
+        return render_command_string(self._get_plan(), python_exe=sys.executable)

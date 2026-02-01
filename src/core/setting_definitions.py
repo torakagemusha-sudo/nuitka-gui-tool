@@ -97,3 +97,9 @@ def load_setting_definitions(path: Optional[Path] = None) -> SettingRegistry:
     if path is None:
         _registry_cache = registry
     return registry
+
+
+def clear_registry_cache() -> None:
+    """Clear the cached registry so the next load reads from disk."""
+    global _registry_cache
+    _registry_cache = None
