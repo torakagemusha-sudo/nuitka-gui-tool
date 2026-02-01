@@ -96,12 +96,7 @@ class PlatformDetector:
                 timeout=5
             )
             if result.returncode == 0:
-                # Parse version from output
-                output = result.stdout.strip()
-                # Output is usually like "Nuitka 2.0.3"
-                if 'Nuitka' in output:
-                    return output
-                return output
+                return result.stdout.strip()
             return "Unknown"
         except (subprocess.TimeoutExpired, FileNotFoundError, PermissionError):
             return "Not installed"

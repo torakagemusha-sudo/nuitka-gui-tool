@@ -4,10 +4,10 @@ Improved main window with engineer-focused instrument panel UI (PySide6).
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTabWidget,
     QPlainTextEdit, QSplitter, QFrame, QLineEdit, QComboBox, QListWidget,
-    QStackedWidget, QTableWidget, QTableWidgetItem, QSizePolicy, QApplication
+    QStackedWidget, QTableWidget, QTableWidgetItem, QApplication
 )
-from PySide6.QtCore import Qt, QSize, QUrl
-from PySide6.QtGui import QPainter, QColor, QDesktopServices
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPainter, QColor, QDesktopServices, QUrl
 import platform
 import sys
 from pathlib import Path
@@ -755,7 +755,9 @@ class MainWindow(QWidget):
 
         # Save preference to config
         self.config.set("app.theme", new_theme)
-        self.config.save(self.config.get_file_path())
+        config_path = self.config.get_file_path()
+        if config_path:
+            self.config.save(config_path)
 
         # Switch theme
         theme_manager.switch_theme(self.app.app, new_theme)

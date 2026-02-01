@@ -3,7 +3,6 @@ Compilation executor for running Nuitka in a separate thread.
 """
 import subprocess
 import threading
-import queue
 import time
 import logging
 from enum import Enum
@@ -70,12 +69,10 @@ class CompilationExecutor:
             try:
                 self.process.terminate()
                 # Give it a moment to terminate gracefully
-                time.sleep(0.5)
-                if self.process.poll() is None:
-                    self.process.kill()
-            except subprocess.TimeoutExpired:
-                logger.warning("Process did not terminate gracefully, forcing kill")
-                if self.process:
+                try:
+                    self.process.wait(timeout=1.0)
+                except subprocess.TimeoutExpired:
+                    logger.warning("Process did not terminate gracefully, forcing kill")
                     self.process.kill()
             except (ProcessLookupError, PermissionError) as e:
                 logger.error(f"Failed to stop compilation process: {e}")
@@ -127,7 +124,6 @@ class CompilationExecutor:
                 stderr=subprocess.STDOUT,
                 text=True,
                 bufsize=1,
-                universal_newlines=True
             )
 
             # Read output line by line with defensive check

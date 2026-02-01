@@ -4,7 +4,7 @@ Preset definitions and application.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 @dataclass(frozen=True)
@@ -73,7 +73,7 @@ PRESETS: List[PresetDefinition] = [
 ]
 
 
-def get_preset(name: str) -> PresetDefinition | None:
+def get_preset(name: str) -> Optional[PresetDefinition]:
     for preset in PRESETS:
         if preset.name == name:
             return preset

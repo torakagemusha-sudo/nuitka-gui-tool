@@ -383,48 +383,38 @@ class NuitkaGUI(QMainWindow):
 
     def show_shortcuts_dialog(self):
         """Show keyboard shortcuts help dialog."""
-        shortcuts_text = """
-<h3>Keyboard Shortcuts</h3>
+        shortcuts_text = (
+            "KEYBOARD SHORTCUTS\n"
+            "==================\n"
+            "\n"
+            "File Operations:\n"
+            "  Ctrl+N          New Configuration\n"
+            "  Ctrl+O          Open Configuration\n"
+            "  Ctrl+S          Save Configuration\n"
+            "  Ctrl+Shift+S    Save As...\n"
+            "  Ctrl+Q          Exit Application\n"
+            "\n"
+            "Build Operations:\n"
+            "  F5              Start Build\n"
+            "  Shift+F5        Stop Build\n"
+            "  Ctrl+Shift+V    Validate Configuration\n"
+            "\n"
+            "View:\n"
+            "  Ctrl+K          Show Command\n"
+            "  Ctrl+L          Clear Output\n"
+            "  Ctrl+T          Toggle Theme\n"
+            "  Ctrl+`          Toggle Console\n"
+            "\n"
+            "Help:\n"
+            "  F1              Show This Dialog\n"
+            "\n"
+            "Navigation:\n"
+            "  Tab             Navigate between fields\n"
+            "  Shift+Tab       Navigate backwards\n"
+            "  Enter           Move to next field\n"
+            "  Shift+Enter     Move to previous field\n"
+        )
 
-<h4>File Operations</h4>
-<table style='width:100%; border-collapse: collapse;'>
-<tr><td style='padding: 4px;'><b>Ctrl+N</b></td><td>New Configuration</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+O</b></td><td>Open Configuration</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+S</b></td><td>Save Configuration</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+Shift+S</b></td><td>Save As...</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+Q</b></td><td>Exit Application</td></tr>
-</table>
-
-<h4>Build Operations</h4>
-<table style='width:100%; border-collapse: collapse;'>
-<tr><td style='padding: 4px;'><b>F5</b></td><td>Start Build</td></tr>
-<tr><td style='padding: 4px;'><b>Shift+F5</b></td><td>Stop Build</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+Shift+V</b></td><td>Validate Configuration</td></tr>
-</table>
-
-<h4>View</h4>
-<table style='width:100%; border-collapse: collapse;'>
-<tr><td style='padding: 4px;'><b>Ctrl+K</b></td><td>Show Command</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+L</b></td><td>Clear Output</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+T</b></td><td>Toggle Theme</td></tr>
-<tr><td style='padding: 4px;'><b>Ctrl+`</b></td><td>Toggle Console</td></tr>
-</table>
-
-<h4>Help</h4>
-<table style='width:100%; border-collapse: collapse;'>
-<tr><td style='padding: 4px;'><b>F1</b></td><td>Show This Dialog</td></tr>
-</table>
-
-<h4>Navigation</h4>
-<table style='width:100%; border-collapse: collapse;'>
-<tr><td style='padding: 4px;'><b>Tab</b></td><td>Navigate between fields</td></tr>
-<tr><td style='padding: 4px;'><b>Shift+Tab</b></td><td>Navigate backwards</td></tr>
-<tr><td style='padding: 4px;'><b>Enter</b></td><td>Move to next field</td></tr>
-<tr><td style='padding: 4px;'><b>Shift+Enter</b></td><td>Move to previous field</td></tr>
-</table>
-        """
-
-        # Create a dialog with formatted text
         dialog = QDialog(self)
         dialog.setWindowTitle("Keyboard Shortcuts")
         dialog.setMinimumSize(500, 600)
@@ -433,14 +423,7 @@ class NuitkaGUI(QMainWindow):
 
         text_edit = QPlainTextEdit()
         text_edit.setReadOnly(True)
-        text_edit.setPlainText(shortcuts_text.replace("<h3>", "\n").replace("</h3>", "\n")
-            .replace("<h4>", "\n").replace("</h4>", ":")
-            .replace("<table", "").replace("</table>", "")
-            .replace("<tr>", "").replace("</tr>", "")
-            .replace("<td", "  ").replace("</td>", "")
-            .replace("<b>", "").replace("</b>", "")
-            .replace("style='padding: 4px;'", "")
-            .replace("style='width:100%; border-collapse: collapse;'", ""))
+        text_edit.setPlainText(shortcuts_text)
         layout.addWidget(text_edit)
 
         close_btn = QPushButton("Close")
