@@ -57,6 +57,7 @@ class MainWindow(QWidget):
         self.tab_labels = [tab.get("label") for tab in self.registry.get_tabs()]
         self.current_plan = None
         self.last_success_plan = None
+        self._loading = False
 
         self.create_ui()
         self.load_from_config()
@@ -539,18 +540,24 @@ class MainWindow(QWidget):
     def update_status(self, message, status_type="info"):
         """Update status strip."""
         self.status_label.setText(message)
+        from .styles import theme_manager
+        colors = theme_manager.get_colors(theme_manager.current_theme)
         color_map = {
-            "info": "#3B5C8A",
-            "success": "#3A7C3A",
-            "warning": "#C27A2A",
-            "error": "#B23A3A",
+            "info": colors["info"],
+            "success": colors["success"],
+            "warning": colors["warning"],
+            "error": colors["error"],
         }
-        self.status_indicator.set_color(color_map.get(status_type, "#3B5C8A"))
+        self.status_indicator.set_color(color_map.get(status_type, colors["info"]))
 
     def load_from_config(self):
         """Load values from config into UI."""
-        for tab in self.tabs:
-            tab.load_from_config()
+        self._loading = True
+        try:
+            for tab in self.tabs:
+                tab.load_from_config()
+        finally:
+            self._loading = False
 
         config_path = self.config.get_file_path()
         if config_path:
@@ -590,6 +597,8 @@ class MainWindow(QWidget):
 
     def on_setting_changed(self, key):
         """Handle setting change and refresh previews."""
+        if self._loading:
+            return
         self.refresh_flag_plan()
 
     def refresh_flag_plan(self):
@@ -653,35 +662,27 @@ class MainWindow(QWidget):
         self.last_success_plan = plan
         self.update_diff_view()
 
+    def _resolve_output_dir(self) -> Path:
+        """Resolve the output directory from config or defaults."""
+        output_dir = self.config.get("basic.output_dir")
+        if output_dir:
+            return Path(output_dir)
+        input_file = self.config.get("basic.input_file")
+        if input_file:
+            return Path(input_file).parent / "dist"
+        return Path.cwd() / "dist"
+
     def open_output_folder(self):
         """Open the output folder in file explorer."""
-        output_dir = self.config.get("basic.output_dir")
-        input_file = self.config.get("basic.input_file")
-
-        path = None
-        if output_dir:
-            path = Path(output_dir)
-        elif input_file:
-            path = Path(input_file).parent / "dist"
-        else:
-            path = Path.cwd() / "dist"
-
-        if path and path.exists():
+        path = self._resolve_output_dir()
+        if path.exists():
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(path)))
         else:
             self.append_output(f"Output folder not found: {path}\n")
 
     def populate_artifacts(self):
         """Populate artifacts table with files in output directory."""
-        output_dir = self.config.get("basic.output_dir")
-        input_file = self.config.get("basic.input_file")
-
-        if output_dir:
-            base_path = Path(output_dir)
-        elif input_file:
-            base_path = Path(input_file).parent / "dist"
-        else:
-            base_path = Path.cwd() / "dist"
+        base_path = self._resolve_output_dir()
 
         self.artifacts_table.setRowCount(0)
         if not base_path.exists():
@@ -767,7 +768,9 @@ class MainWindow(QWidget):
             self.config.save(config_path)
 
         # Switch theme
-        theme_manager.switch_theme(self.app.app, new_theme)
+        qapp = QApplication.instance()
+        if qapp:
+            theme_manager.switch_theme(qapp, new_theme)
         self._update_theme_icon()
 
         # Update status

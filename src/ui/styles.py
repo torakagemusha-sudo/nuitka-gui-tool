@@ -548,6 +548,7 @@ QSpinBox:focus, QDoubleSpinBox:focus {{
 # Global theme manager instance
 theme_manager = ThemeManager()
 
+
 def apply_stylesheet(app, theme="light"):
     """
     Apply the stylesheet to the application.

@@ -153,19 +153,19 @@ class DataDrivenTab(QWidget):
                 self, "", mode="directory" if control_type == "directory" else "file",
                 file_types=control.get("file_types")
             )
-            widget.entry.textChanged.connect(lambda: self._on_change(key))
+            widget.entry.textChanged.connect(lambda _, k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
         if control_type == "text":
             widget = QLineEdit()
-            widget.textChanged.connect(lambda: self._on_change(key))
+            widget.textChanged.connect(lambda _, k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
         if control_type == "checkbox":
             widget = QCheckBox()
-            widget.stateChanged.connect(lambda: self._on_change(key))
+            widget.stateChanged.connect(lambda _, k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
@@ -174,14 +174,14 @@ class DataDrivenTab(QWidget):
             options = control.get("options", [])
             for opt in options:
                 widget.addItem(opt.get("label"), opt.get("value"))
-            widget.currentIndexChanged.connect(lambda: self._on_change(key))
+            widget.currentIndexChanged.connect(lambda _, k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
         if control_type == "spin":
             widget = QSpinBox()
             widget.setRange(control.get("min", 0), control.get("max", 999))
-            widget.valueChanged.connect(lambda: self._on_change(key))
+            widget.valueChanged.connect(lambda _, k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
@@ -221,18 +221,18 @@ class DataDrivenTab(QWidget):
 
         if control_type == "list":
             widget = ListBoxWithButtons(self, "", height=5)
-            widget.itemsChanged.connect(lambda: self._on_change(key))
+            widget.itemsChanged.connect(lambda k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
         if control_type == "plugin_picker":
             widget = PluginPicker(self)
-            widget.itemsChanged.connect(lambda: self._on_change(key))
+            widget.itemsChanged.connect(lambda k=key: self._on_change(k))
             self.controls[key] = {"type": control_type, "widget": widget}
             return widget
 
         widget = QLineEdit()
-        widget.textChanged.connect(lambda: self._on_change(key))
+        widget.textChanged.connect(lambda _, k=key: self._on_change(k))
         self.controls[key] = {"type": "text", "widget": widget}
         return widget
 
