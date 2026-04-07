@@ -1,0 +1,1 @@
+PySide6 GUI for Nuitka — compile Python apps to executables without memorising CLI flags
